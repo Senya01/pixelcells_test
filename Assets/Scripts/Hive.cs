@@ -1,33 +1,44 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class Hive : MonoBehaviour
 {
-    public GameObject beeScoutPrefab;
-    public GameObject beeWorkerPrefab;
-    public GameObject[] flowersPrefabs;
-    public float flowersSpawnRadius = 5;
-    public int flowersSpawnCount = 10;
-    public int pointsToSpawn = 5;
+    [SerializeField] GameObject beeScoutPrefab;
+    [SerializeField] GameObject beeWorkerPrefab;
+    [SerializeField] GameObject[] flowersPrefabs;
+    [SerializeField,Range(1, 5)] float flowersSpawnRadius = 3;
+    [SerializeField] int flowersSpawnCount = 20;
+    [SerializeField] int pointsToSpawn = 5;
 
     public static int Points = 0;
-    public Vector3[] knownFlowers;
+    public List<Vector2> knownFlowers;
 
     void Start()
     {
         Points = pointsToSpawn;
-        
-        var beesCount = Random.Range(2, 4);
+        Generator();
+    }
 
+    private void SpawnBee(GameObject prefab)
+    {
+        GameObject bee = Instantiate(prefab, transform.position, Quaternion.identity, gameObject.transform);
+        bee.GetComponent<Bee>().hive = this;
+    }
+    
+    private void Generator()
+    {
+        var beesCount = Random.Range(2, 4);
         for (var i = 1; i <= beesCount; i++)
         {
-            GameObject bee = Instantiate(i <= beesCount / 2 ? beeScoutPrefab : beeWorkerPrefab, transform.position, Quaternion.identity, gameObject.transform);
-            bee.GetComponent<Bee>().hive = this;
+            GameObject prefab = i <= beesCount / 2 ? beeScoutPrefab : beeWorkerPrefab;
+            SpawnBee(prefab);
         }
+    }
 
+    private void Awake()
+    {
         for (var i = 0; i < flowersSpawnCount; i++)
         {
             GameObject flowerPrefab = flowersPrefabs[Random.Range(0, flowersPrefabs.Length)];
@@ -37,10 +48,15 @@ public class Hive : MonoBehaviour
         }
     }
 
-    private void Update()
+    public void CheckSpawnBee()
     {
-        if (Points > 0) return;
-        Instantiate(Random.Range(1, 100) <= 5 ? beeScoutPrefab : beeWorkerPrefab, transform.position, Quaternion.identity, gameObject.transform);
-        Points = pointsToSpawn;
+        // нет ограничений по спавну
+        Points--;
+        if (Points <= 0)
+        {
+            GameObject prefab = Random.Range(0, 100) <= 5 ? beeScoutPrefab : beeWorkerPrefab;
+            SpawnBee(prefab);
+            Points = pointsToSpawn;
+        }
     }
 }

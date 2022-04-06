@@ -104,3 +104,4 @@ MonoBehaviour:
   flowersSpawnRadius: 3
   flowersSpawnCount: 20
   pointsToSpawn: 5
+  knownFlowers: []
