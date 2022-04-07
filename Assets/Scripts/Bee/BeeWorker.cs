@@ -7,10 +7,10 @@ public class BeeWorker : Bee
     private Vector2 _flowerVector;
 
     // timer
-    private float _timeLeft = 0f;
-    private bool _timerOn = false;
+    private float _timeLeft;
+    private bool _timerOn;
 
-    private bool _pollinated = false;
+    private bool _pollinated;
 
     void Start()
     {
@@ -43,25 +43,15 @@ public class BeeWorker : Bee
 
     private void Update()
     {
-        if (target == new Vector2() && hive.knownFlowers.Count != 0)
-        {
-            GetRandomFlower();
-        }
+        if (target == new Vector2() && hive.knownFlowers.Count != 0) GetRandomFlower();
 
-        // если опылён и цель = улью и пчела достигла улья
-        if (_pollinated && target == (Vector2)transform.parent.position && (Vector2)transform.position == (Vector2)transform.parent.position)
-        {
-            _pollinated = false;
-            hive.CheckSpawnBee();
-            GetRandomFlower();
-        }
-
-        if (target != new Vector2(0, 0))
+        if (target != new Vector2())
         {
             MoveTo();
             Rotation();
             CheckPosition();
             Timer();
+            BeeTouchHive();
         }
     }
 
@@ -69,6 +59,16 @@ public class BeeWorker : Bee
     {
         if ((Vector2)transform.position == target && hive.knownFlowers.Count != 0 && target != (Vector2)transform.parent.position)
         {
+            GetRandomFlower();
+        }
+    }
+
+    private void BeeTouchHive()
+    {
+        if (_pollinated && target == (Vector2)transform.parent.position && (Vector2)transform.position == (Vector2)transform.parent.position)
+        {
+            _pollinated = false;
+            hive.CheckSpawnBee();
             GetRandomFlower();
         }
     }
