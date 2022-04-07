@@ -7,12 +7,7 @@ public class Bee : MonoBehaviour
     [SerializeField] public float speed = 1.5f;
 
     public Hive hive;
-
-    protected void SetRandomTarget()
-    {
-        target = new Vector2(Random.Range(-radius, radius), Random.Range(-radius, radius)) + (Vector2)transform.position;
-    }
-
+    
     protected void MoveTo()
     {
         transform.position = Vector2.MoveTowards(transform.position, target, speed * Time.deltaTime);

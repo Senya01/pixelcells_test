@@ -22,6 +22,11 @@ public class BeeScout : Bee
         }
     }
 
+    private void SetRandomTarget()
+    {
+        target = new Vector2(Random.Range(-radius, radius), Random.Range(-radius, radius)) + (Vector2)hive.transform.position;
+    }
+
     private void OnTriggerEnter2D(Collider2D col)
     {
         if (col.CompareTag("Flower"))

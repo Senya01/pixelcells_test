@@ -103,5 +103,5 @@ MonoBehaviour:
   - {fileID: 5243196757689912638, guid: 3a04cf8ab79528345b4f2ee47bb2cfe0, type: 3}
   flowersSpawnRadius: 3
   flowersSpawnCount: 20
-  pointsToSpawn: 5
+  pointsToSpawn: 15
   knownFlowers: []
