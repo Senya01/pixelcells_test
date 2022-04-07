@@ -48,7 +48,7 @@ public class BeeWorker : Bee
             GetRandomFlower();
         }
 
-        // если опылён и цель = цлью и пчела достигла улья
+        // если опылён и цель = улью и пчела достигла улья
         if (_pollinated && target == (Vector2)transform.parent.position && (Vector2)transform.position == (Vector2)transform.parent.position)
         {
             _pollinated = false;
