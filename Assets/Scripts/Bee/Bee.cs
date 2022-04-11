@@ -2,11 +2,10 @@
 
 public class Bee : MonoBehaviour
 {
-    public Vector2 target;
-    [SerializeField] public float radius = 5;
-    [SerializeField] public float speed = 1.5f;
+    [SerializeField,Tooltip("Скорость пчелы")] public float speed = 1.5f;
 
-    public Hive hive;
+    [HideInInspector] public Vector2 target;
+    [HideInInspector] public Hive hive;
     
     protected void MoveTo()
     {

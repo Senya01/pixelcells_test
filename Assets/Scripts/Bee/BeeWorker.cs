@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class BeeWorker : Bee
 {
-    [SerializeField] float time = 3;
+    [SerializeField,Tooltip("Время зависания над цветком")] Vector2 time;
 
     private Vector2 _flowerVector;
 
@@ -14,7 +14,7 @@ public class BeeWorker : Bee
 
     void Start()
     {
-        _timeLeft = time;
+        _timeLeft = Random.Range(time.x, time.y);
     }
 
     private void Timer()
@@ -28,7 +28,7 @@ public class BeeWorker : Bee
             }
             else
             {
-                _timeLeft = time;
+                _timeLeft = Random.Range(time.x, time.y);
                 _timerOn = false;
                 _pollinated = true;
                 target = transform.parent.position;
@@ -43,9 +43,9 @@ public class BeeWorker : Bee
 
     private void Update()
     {
-        if (target == new Vector2() && hive.knownFlowers.Count != 0) GetRandomFlower();
+        if (target == Vector2.zero && hive.knownFlowers.Count != 0) GetRandomFlower();
 
-        if (target != new Vector2())
+        if (target != Vector2.zero)
         {
             MoveTo();
             Rotation();

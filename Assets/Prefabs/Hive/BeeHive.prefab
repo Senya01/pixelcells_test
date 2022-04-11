@@ -97,6 +97,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   beeScoutPrefab: {fileID: 320562729502954106, guid: e151c152fee6f8248a8f8cc8b866940c, type: 3}
   beeWorkerPrefab: {fileID: 7743012527993503109, guid: 995ad1199ee09214595d24ec1b3bb4e3, type: 3}
+  beeDefenderPrefab: {fileID: 0}
   flowersPrefabs:
   - {fileID: 4666496078268254656, guid: 2082d3a6b6ea6d743b67e444f818a216, type: 3}
   - {fileID: 8755190365594219889, guid: e7300ffc59851e1408020c6b015ea0c0, type: 3}
@@ -104,4 +105,9 @@ MonoBehaviour:
   flowersSpawnRadius: 3
   flowersSpawnCount: 20
   pointsToSpawn: 15
+  maxBeeScoutCount: 5
+  beeDefaultScoutSpawnChance: 5
+  maxBeeDefenderCount: 5
+  beeDefenderSpawnIfMoreThen: 10
+  beeDefaultDefenderSpawnChance: 5
   knownFlowers: []

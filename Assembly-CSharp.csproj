@@ -52,13 +52,15 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\Test.cs" />
      <Compile Include="Assets\Scripts\Hive.cs" />
      <Compile Include="Assets\Scripts\Bee\BeeScout.cs" />
      <Compile Include="Assets\Scripts\Bee\BeeWorker.cs" />
      <Compile Include="Assets\Scripts\Bee\Bee.cs" />
      <Compile Include="Assets\Scripts\GeneratorHive.cs" />
      <Compile Include="Assets\Scripts\Camera.cs" />
-     <Compile Include="Assets\Scripts\Test.cs" />
+     <Compile Include="Assets\Scripts\Bee\BattleBee.cs" />
+     <Compile Include="Assets\Scripts\Bee\BeeDefender.cs" />
  <Reference Include="UnityEngine">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.19f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
  </Reference>

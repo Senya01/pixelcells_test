@@ -2,8 +2,10 @@ using UnityEngine;
 
 public class BeeScout : Bee
 {
-    private Vector2 flower;
+    [SerializeField,Tooltip("Радиус случайного перемещения")] public float radius;
     
+    private Vector2 flower;
+
     void Start()
     {
         SetRandomTarget();
@@ -19,7 +21,7 @@ public class BeeScout : Bee
 
     private void CheckPosition()
     {
-        if ((Vector2)transform.position == target && flower == new Vector2())
+        if ((Vector2)transform.position == target && flower == Vector2.zero)
         {
             SetRandomTarget();
         }
@@ -32,10 +34,10 @@ public class BeeScout : Bee
     
     private void BeeTouchHive()
     {
-        if (flower != new Vector2() && target == (Vector2)transform.parent.position && (Vector2)transform.position == (Vector2)transform.parent.position)
+        if (flower != Vector2.zero && target == (Vector2)transform.parent.position && (Vector2)transform.position == (Vector2)transform.parent.position)
         {
             hive.knownFlowers.Add(flower);
-            flower = new Vector2();
+            flower = Vector2.zero;
         }
     }
 
