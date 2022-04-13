@@ -104,10 +104,11 @@ MonoBehaviour:
   - {fileID: 5243196757689912638, guid: 3a04cf8ab79528345b4f2ee47bb2cfe0, type: 3}
   flowersSpawnRadius: 3
   flowersSpawnCount: 20
+  beeSpawnCount: {x: 2, y: 4}
   pointsToSpawn: 15
   maxBeeScoutCount: 5
-  beeDefaultScoutSpawnChance: 5
+  beeScoutSpawnChance: 5
   maxBeeDefenderCount: 5
   beeDefenderSpawnIfMoreThen: 10
-  beeDefaultDefenderSpawnChance: 5
+  beeDefenderSpawnChance: 5
   knownFlowers: []

@@ -13,6 +13,7 @@ public class Hive : MonoBehaviour
     [Header("Настройки")]
     [SerializeField,Tooltip("Радиус спавна цветов")] float flowersSpawnRadius;
     [SerializeField,Tooltip("Кол-во цветов")] int flowersSpawnCount;
+    [SerializeField,Tooltip("Кол-во пчёл")] Vector2 beeSpawnCount;
     [SerializeField,Tooltip("Количество \"очков\" для появления новой пчелы")] int pointsToSpawn;
 
     [Header("Разведчики")]
@@ -50,7 +51,7 @@ public class Hive : MonoBehaviour
 
     private void Generator()
     {
-        var beesCount = Random.Range(2, 4);
+        var beesCount = Random.Range(beeSpawnCount.x, beeSpawnCount.y);
         for (int i = 1; i <= beesCount; i++)
         {
             GameObject prefab = i <= beesCount / 2 ? beeScoutPrefab : beeWorkerPrefab;

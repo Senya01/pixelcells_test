@@ -4,7 +4,7 @@ public class BeeScout : Bee
 {
     [SerializeField,Tooltip("Радиус случайного перемещения")] public float radius;
     
-    private Vector2 flower;
+    private Vector2 _flower;
 
     void Start()
     {
@@ -14,41 +14,65 @@ public class BeeScout : Bee
     void Update()
     {
         Rotation();
-        CheckPosition();
         MoveTo();
+
+        if (toHive)
+        {
+            // таймер на улей
+            Timer(transform.parent.position);
+        }
+
+        CheckPosition();
         BeeTouchHive();
+    }
+
+    void TimerEndAction()
+    {
+        if (toHive)
+        {
+            // добавить цветок в список известных
+            hive.knownFlowers.Add(_flower);
+            _flower = Vector2.zero;
+        }
     }
 
     private void CheckPosition()
     {
-        if ((Vector2)transform.position == target && flower == Vector2.zero)
+        // достик цели и нет цветка
+        if ((Vector2)transform.position == target && _flower == Vector2.zero)
         {
             SetRandomTarget();
         }
     }
 
+    // установить случайную цель
     private void SetRandomTarget()
     {
+        toHive = false;
         target = new Vector2(Random.Range(-radius, radius), Random.Range(-radius, radius)) + (Vector2)hive.transform.position;
     }
     
     private void BeeTouchHive()
     {
-        if (flower != Vector2.zero && target == (Vector2)transform.parent.position && (Vector2)transform.position == (Vector2)transform.parent.position)
+        // если есть новый цветок, цель - улей, достиг улья
+        if (_flower != Vector2.zero && toHive && (Vector2)transform.position == (Vector2)transform.parent.position)
         {
-            hive.knownFlowers.Add(flower);
-            flower = Vector2.zero;
+            turnOnTimer(timeInHive);
         }
     }
 
     private void OnTriggerEnter2D(Collider2D col)
     {
+        // коснулся цветка
         if (col.CompareTag("Flower"))
         {
+            // если цветка нет в уже известных
             if (!hive.knownFlowers.Contains(col.transform.position))
             {
-                flower = col.transform.position;
-                target = transform.parent.position;
+                // запомнить новый цветок
+                _flower = col.transform.position;
+                // вернуться в улей
+                ReturnToHive();
             }
         }
     }

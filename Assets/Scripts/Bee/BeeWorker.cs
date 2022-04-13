@@ -1,87 +1,86 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class BeeWorker : Bee
 {
-    [SerializeField,Tooltip("Время зависания над цветком")] Vector2 time;
+    [SerializeField, Tooltip("Время зависания над цветком")]
+    Vector2 timeOverFlower;
 
     private Vector2 _flowerVector;
-
-    // timer
-    private float _timeLeft;
-    private bool _timerOn;
-
     private bool _pollinated;
 
-    void Start()
+    // выполняется при окончании таймера
+    void TimerEndAction()
     {
-        _timeLeft = Random.Range(time.x, time.y);
-    }
-
-    private void Timer()
-    {
-        if (_timerOn)
+        if (toHive)
         {
-            target = _flowerVector;
-            if (_timeLeft > 0)
-            {
-                _timeLeft -= Time.deltaTime;
-            }
-            else
-            {
-                _timeLeft = Random.Range(time.x, time.y);
-                _timerOn = false;
-                _pollinated = true;
-                target = transform.parent.position;
-            }
+        }
+        else
+        {
+            _pollinated = true;
+            ReturnToHive();
         }
     }
 
-    private void GetRandomFlower()
+    // делает целью случайный вектор
+    private void RandomFlowerTarget()
     {
         target = hive.knownFlowers[Random.Range(0, hive.knownFlowers.Count - 1)];
     }
 
     private void Update()
     {
-        if (target == Vector2.zero && hive.knownFlowers.Count != 0) GetRandomFlower();
+        // если нет цели, известен хотя бы 1 цветок, то установить цель на случайный цветок
+        if (target == Vector2.zero && hive.knownFlowers.Count != 0) RandomFlowerTarget();
 
         if (target != Vector2.zero)
         {
             MoveTo();
             Rotation();
+            
+            if (toHive)
+            {
+                // таймер на улей
+                Timer(transform.parent.position);
+            }
+            else
+            {
+                // таймер на цветок
+                Timer(_flowerVector);
+            }
+
             CheckPosition();
-            Timer();
             BeeTouchHive();
         }
     }
 
     private void CheckPosition()
     {
-        if ((Vector2)transform.position == target && hive.knownFlowers.Count != 0 && target != (Vector2)transform.parent.position)
+        // если достиг цели, известен хотя бы 1 цветок и цель не улей
+        // if ((Vector2) transform.position == target && hive.knownFlowers.Count != 0 && !toHive)
+        // {
+        //     RandomFlowerTarget();
+        // }
+
+        // если достиг цели и цель не улей
+        if ((Vector2) transform.position == target && !toHive)
         {
-            GetRandomFlower();
+            // точка для зависания = цветку
+            _flowerVector = transform.position;
+            // включить таймер
+            turnOnTimer(timeOverFlower);
         }
     }
 
     private void BeeTouchHive()
     {
-        if (_pollinated && target == (Vector2)transform.parent.position && (Vector2)transform.position == (Vector2)transform.parent.position)
+        // опылён, цель - улей, достиг улья
+        if (_pollinated && toHive && (Vector2) transform.position == (Vector2) transform.parent.position)
         {
+            // декремируется счётчик и устанавливается новый цветок
             _pollinated = false;
             hive.CheckSpawnBee();
-            GetRandomFlower();
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D col)
-    {
-        if (col.CompareTag("Flower"))
-        {
-            if (hive.knownFlowers.Contains(col.transform.position) && target == (Vector2)col.transform.position)
-            {
-                _flowerVector = col.transform.position;
-                _timerOn = true;
-            }
+            RandomFlowerTarget();
         }
     }
 }
