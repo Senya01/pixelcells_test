@@ -16,26 +16,18 @@ public class BeeScout : Bee
         Rotation();
         MoveTo();
 
-        if (toHive)
-        {
-            // таймер на улей
-            Timer(transform.parent.position);
-        }
-
-        CheckPosition();
-        BeeTouchHive();
-    }
-
-    void TimerEndAction()
-    {
-        if (toHive)
+        // таймер на улей
+        if (toHive && Timer(transform.parent.position) && !hive.knownFlowers.Contains(_flower))
         {
             // добавить цветок в список известных
             hive.knownFlowers.Add(_flower);
             _flower = Vector2.zero;
         }
-    }
 
+        CheckPosition();
+        BeeTouchHive();
+    }
+    
     private void CheckPosition()
     {
         // достик цели и нет цветка
@@ -55,7 +47,7 @@ public class BeeScout : Bee
     private void BeeTouchHive()
     {
         // если есть новый цветок, цель - улей, достиг улья
-        if (_flower != Vector2.zero && toHive && (Vector2)transform.position == (Vector2)transform.parent.position)
+        if (_flower != Vector2.zero && toHive && (Vector2)transform.position == (Vector2)transform.parent.position && !timerOn)
         {
             turnOnTimer(timeInHive);
         }

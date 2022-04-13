@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.Serialization;
 
 public class Bee : MonoBehaviour
 {
@@ -13,9 +12,9 @@ public class Bee : MonoBehaviour
     [HideInInspector] public Hive hive;
 
     // является ли целью улей
-    protected bool toHive = true;
+    [HideInInspector] public bool toHive = false;
 
-    private bool timerOn;
+    protected bool timerOn = false;
     private float timeLeft;
 
     protected void MoveTo()
@@ -23,11 +22,7 @@ public class Bee : MonoBehaviour
         transform.position = Vector2.MoveTowards(transform.position, target, speed * Time.deltaTime);
     }
 
-    void TimerEndAction()
-    {
-    }
-
-    protected void Timer(Vector2 hoveringTarget)
+    protected bool Timer(Vector2 hoveringTarget)
     {
         if (timerOn)
         {
@@ -39,9 +34,11 @@ public class Bee : MonoBehaviour
             else
             {
                 timerOn = false;
-                TimerEndAction();
+                return true;
             }
         }
+
+        return false;
     }
 
     protected void turnOnTimer(Vector2 timeRange)
