@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngineInternal;
 
 public class BeeWorker : Bee
 {
@@ -9,6 +10,14 @@ public class BeeWorker : Bee
     private Vector2 _flowerVector;
     private bool _pollinated = false;
 
+    // hive timer
+    private bool hiveTimerOn = false;
+    private float hiveTimeLeft = 0;
+    
+    // hive timer
+    private bool flowerTimerOn = false;
+    private float flowerTimeLeft = 0;
+    
     // делает целью случайный вектор
     private void RandomFlowerTarget()
     {
@@ -28,35 +37,73 @@ public class BeeWorker : Bee
             MoveTo();
             Rotation();
 
+            HiveTimer();
+            FlowerTimer();
+            
             CheckPosition();
             BeeTouchHive();
-            
-            // таймер на улей
-            if (toHive && Timer(transform.parent.position) && _pollinated)
+        }
+    }
+
+    // не работает
+    private void FlowerTimer()
+    {
+        if (flowerTimerOn)
+        {
+            target = transform.parent.position;
+            if (flowerTimeLeft > 0)
             {
-                // декремируется счётчик и устанавливается новый цветок
-                _pollinated = false;
-                hive.CheckSpawnBee();
-                RandomFlowerTarget();
+                flowerTimeLeft -= Time.deltaTime;
             }
-            // таймер на цветок
-            else if (!toHive && Timer(_flowerVector))
+            else
             {
+                flowerTimerOn = false;
                 _pollinated = true;
                 ReturnToHive();
             }
         }
     }
 
+    // не работает
+    private void HiveTimer()
+    {
+        if (hiveTimerOn)
+        {
+            target = transform.parent.position;
+            if (hiveTimeLeft > 0)
+            {
+                hiveTimeLeft -= Time.deltaTime;
+            }
+            else
+            {
+                hiveTimerOn = false;
+                _pollinated = false;
+                hive.CheckSpawnBee();
+                RandomFlowerTarget();
+            }
+        }
+    }
+    
+    private void SetHiveTimer()
+    {
+        hiveTimeLeft = Random.Range(timeInHive.x, timeInHive.y);
+    }
+    
+    private void SetFlowerTimer()
+    {
+        flowerTimeLeft = Random.Range(timeOverFlower.x, timeOverFlower.y);
+    }
+
     private void CheckPosition()
     {
         // если достиг цели и цель не улей
-        if ((Vector2) transform.position == target && !toHive && timerOn == false)
+        if ((Vector2) transform.position == target && !toHive)
         {
             // точка для зависания = цветку
             _flowerVector = transform.position;
             // включить таймер
-            turnOnTimer(timeOverFlower);
+            SetFlowerTimer();
+            flowerTimerOn = true;
         }
     }
 
@@ -65,7 +112,8 @@ public class BeeWorker : Bee
         // опылён, цель - улей, достиг улья
         if (_pollinated && toHive && (Vector2) transform.position == (Vector2) transform.parent.position)
         {
-            turnOnTimer(timeInHive);
+            SetHiveTimer();
+            hiveTimerOn = true;
         }
     }
 }

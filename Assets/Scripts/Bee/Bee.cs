@@ -14,37 +14,9 @@ public class Bee : MonoBehaviour
     // является ли целью улей
     [HideInInspector] public bool toHive = false;
 
-    protected bool timerOn = false;
-    private float timeLeft;
-
     protected void MoveTo()
     {
         transform.position = Vector2.MoveTowards(transform.position, target, speed * Time.deltaTime);
-    }
-
-    protected bool Timer(Vector2 hoveringTarget)
-    {
-        if (timerOn)
-        {
-            target = hoveringTarget;
-            if (timeLeft > 0)
-            {
-                timeLeft -= Time.deltaTime;
-            }
-            else
-            {
-                timerOn = false;
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    protected void turnOnTimer(Vector2 timeRange)
-    {
-        timeLeft = Random.Range(timeRange.x, timeRange.y);
-        timerOn = true;
     }
 
     // вернуться к улью
