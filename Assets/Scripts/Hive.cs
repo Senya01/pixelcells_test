@@ -16,6 +16,10 @@ public class Hive : MonoBehaviour
     [SerializeField,Tooltip("Кол-во пчёл")] Vector2 beeSpawnCount;
     [SerializeField,Tooltip("Количество \"очков\" для появления новой пчелы")] int pointsToSpawn;
 
+    [Header("Новый улей")]
+    [SerializeField, Tooltip("Кол-во пчел для нового улья")] int beesForNewHive;
+    [SerializeField, Tooltip("Расстояние нового улья")] int radiusNewHive;
+    
     [Header("Разведчики")]
     [Header("Генерация пчёл")]
     [SerializeField,Tooltip("Максимальное количество")] int maxBeeScoutCount;
@@ -25,15 +29,20 @@ public class Hive : MonoBehaviour
     [SerializeField,Tooltip("Спавнить, если в улье больше пчел, чем")] int beeDefenderSpawnIfMoreThen;
     [SerializeField,Tooltip("Вероятность появления, если их меньше максимального числа (%)")] int beeDefenderSpawnChance;
     
+    
     private static int _points = 0;
     
-    private static int _beeScoutCount = 0;
-    private static int _beeWorkerCount = 0;
-    private static int _beeDefenderCount = 0;
-    private static readonly int TotalBeeCount = _beeScoutCount + _beeDefenderCount + _beeWorkerCount;
+    private int _beeScoutCount = 0;
+    private int _beeWorkerCount = 0;
+    private int _beeDefenderCount = 0;
 
     [HideInInspector] public List<Vector2> knownFlowers;
 
+    private int TotalBeeCount()
+    {
+        return _beeScoutCount + _beeDefenderCount + _beeWorkerCount;
+    } 
+    
     void Start()
     {
         _points = pointsToSpawn;
@@ -61,8 +70,6 @@ public class Hive : MonoBehaviour
 
     private void Awake()
     {
-        RandomPrefab();
-        
         for (int i = 0; i < flowersSpawnCount; i++)
         {
             GameObject flowerPrefab = flowersPrefabs[Random.Range(0, flowersPrefabs.Length)];
@@ -86,25 +93,32 @@ public class Hive : MonoBehaviour
 
     private GameObject RandomPrefab()
     {
-        // переписать... что-то странное
-        int beeWorkerSpawnChance = 100;
         List<int> chances = new List<int>();
+        List<GameObject> prefabs = new List<GameObject>();
 
         if (_beeScoutCount < maxBeeScoutCount)
         {
-            beeWorkerSpawnChance -= beeScoutSpawnChance;
             chances.Add(beeScoutSpawnChance);
+            prefabs.Add(beeScoutPrefab);
         }
 
-        if (_beeDefenderCount < maxBeeDefenderCount && TotalBeeCount > beeDefenderSpawnIfMoreThen)
+        if (_beeDefenderCount < maxBeeDefenderCount && TotalBeeCount() > beeDefenderSpawnIfMoreThen)
         {
-            beeWorkerSpawnChance -= beeDefenderSpawnChance;
-            chances.Add(beeDefenderSpawnChance);
+            if (chances.Count > 0)
+            {
+                chances.Add(beeDefenderSpawnChance + chances[chances.Count - 1]);
+            }
+            else
+            {
+                chances.Add(beeDefenderSpawnChance);
+            }
+            prefabs.Add(beeDefenderPrefab);
         }
         
-        chances.Add(beeWorkerSpawnChance);
+        chances.Add(100);
+        prefabs.Add(beeWorkerPrefab);
         int randomIdx = SpawnChance(chances);
-        return beeWorkerPrefab;
+        return prefabs[randomIdx];
     }
     
     public void CheckSpawnBee()
@@ -112,12 +126,12 @@ public class Hive : MonoBehaviour
         _points--;
         if (_points <= 0)
         {
-            GameObject prefab = _beeScoutCount < 5
-                ? Random.Range(0, 100) <= 5 ? beeScoutPrefab : beeWorkerPrefab
-                : beeWorkerPrefab;
+            // GameObject prefab = _beeScoutCount < 5
+            //     ? Random.Range(0, 100) <= 5 ? beeScoutPrefab : beeWorkerPrefab
+            //     : beeWorkerPrefab;
 
-            RandomPrefab();
-            
+            GameObject prefab = RandomPrefab();
+
             SpawnBee(prefab);
             _points = pointsToSpawn;
         }

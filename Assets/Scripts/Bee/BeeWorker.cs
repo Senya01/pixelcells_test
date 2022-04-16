@@ -14,7 +14,7 @@ public class BeeWorker : Bee
     private bool hiveTimerOn = false;
     private float hiveTimeLeft = 0;
     
-    // hive timer
+    // flower timer
     private bool flowerTimerOn = false;
     private float flowerTimeLeft = 0;
     
@@ -25,8 +25,6 @@ public class BeeWorker : Bee
         target = hive.knownFlowers[Random.Range(0, hive.knownFlowers.Count - 1)];
     }
     
-    
-    // таймеры не работают
     private void Update()
     {
         // если нет цели, известен хотя бы 1 цветок, то установить цель на случайный цветок
@@ -37,12 +35,12 @@ public class BeeWorker : Bee
             MoveTo();
             Rotation();
 
-            HiveTimer();
-            FlowerTimer();
-            
             CheckPosition();
             BeeTouchHive();
         }
+        
+        HiveTimer();
+        FlowerTimer();
     }
 
     // не работает
@@ -50,7 +48,7 @@ public class BeeWorker : Bee
     {
         if (flowerTimerOn)
         {
-            target = transform.parent.position;
+            target = _flowerVector;
             if (flowerTimeLeft > 0)
             {
                 flowerTimeLeft -= Time.deltaTime;
@@ -97,7 +95,7 @@ public class BeeWorker : Bee
     private void CheckPosition()
     {
         // если достиг цели и цель не улей
-        if ((Vector2) transform.position == target && !toHive)
+        if ((Vector2) transform.position == target && !toHive && !flowerTimerOn)
         {
             // точка для зависания = цветку
             _flowerVector = transform.position;
@@ -110,7 +108,7 @@ public class BeeWorker : Bee
     private void BeeTouchHive()
     {
         // опылён, цель - улей, достиг улья
-        if (_pollinated && toHive && (Vector2) transform.position == (Vector2) transform.parent.position)
+        if (_pollinated && toHive && (Vector2) transform.position == (Vector2) transform.parent.position && !hiveTimerOn)
         {
             SetHiveTimer();
             hiveTimerOn = true;
