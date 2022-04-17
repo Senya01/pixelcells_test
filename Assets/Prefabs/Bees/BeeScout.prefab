@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 8422690072316800224}
   m_Layer: 0
   m_Name: BeeScout
-  m_TagString: Untagged
+  m_TagString: BeeScout
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -148,4 +148,5 @@ MonoBehaviour:
   timeInHive: {x: 1, y: 3}
   target: {x: 0, y: 0}
   hive: {fileID: 0}
+  toHive: 1
   radius: 1.5

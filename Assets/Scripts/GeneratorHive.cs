@@ -29,7 +29,7 @@ public class GeneratorHive : MonoBehaviour
         }
     }
 
-    bool GetHivePosition(Vector2 hivePosition)
+    public bool GetHivePosition(Vector2 hivePosition)
     {
         for (int i = 0; i < hives.Count; i++)
         {

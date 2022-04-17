@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -18,7 +19,7 @@ public class Hive : MonoBehaviour
 
     [Header("Новый улей")]
     [SerializeField, Tooltip("Кол-во пчел для нового улья")] int beesForNewHive;
-    [SerializeField, Tooltip("Расстояние нового улья")] int radiusNewHive;
+    [SerializeField, Tooltip("Расстояние нового улья")] Vector2 radiusNewHive;
     
     [Header("Разведчики")]
     [Header("Генерация пчёл")]
@@ -30,11 +31,12 @@ public class Hive : MonoBehaviour
     [SerializeField,Tooltip("Вероятность появления, если их меньше максимального числа (%)")] int beeDefenderSpawnChance;
     
     
-    private static int _points = 0;
+    private static int _points;
     
     private int _beeScoutCount = 0;
     private int _beeWorkerCount = 0;
     private int _beeDefenderCount = 0;
+    private bool _newHiveCreated = false;
 
     [HideInInspector] public List<Vector2> knownFlowers;
 
@@ -56,6 +58,28 @@ public class Hive : MonoBehaviour
         if (prefab == beeDefenderPrefab) _beeDefenderCount++;
         GameObject bee = Instantiate(prefab, transform.position, Quaternion.identity, gameObject.transform);
         bee.GetComponent<Bee>().hive = this;
+
+        GenerateNewHive();
+    }
+
+    private void GenerateNewHive()
+    {
+        if (TotalBeeCount() >= beesForNewHive && !_newHiveCreated)
+        {
+            List<GameObject> beesList = (from Transform child in transform where child.CompareTag("BeeWorker") select child.gameObject).ToList();
+            GameObject randomBee = beesList[Random.Range(0, beesList.Count)];
+            Bee bee = randomBee.GetComponent<Bee>();
+            Vector2 position  = new Vector2(Random.Range(-radiusNewHive.x, radiusNewHive.y), Random.Range(-radiusNewHive.x, radiusNewHive.y)) + (Vector2)transform.position;
+            GeneratorHive generatorHive = GameObject.Find("Generators").GetComponent<GeneratorHive>();
+
+            if (generatorHive.GetHivePosition(position))
+            {
+                bee.target = position;
+                bee.newHive = true;
+                _newHiveCreated = true;
+                generatorHive.hives.Add(position);
+            }
+        }
     }
 
     private void Generator()
@@ -126,10 +150,6 @@ public class Hive : MonoBehaviour
         _points--;
         if (_points <= 0)
         {
-            // GameObject prefab = _beeScoutCount < 5
-            //     ? Random.Range(0, 100) <= 5 ? beeScoutPrefab : beeWorkerPrefab
-            //     : beeWorkerPrefab;
-
             GameObject prefab = RandomPrefab();
 
             SpawnBee(prefab);

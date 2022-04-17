@@ -7,6 +7,8 @@ public class BeeWorker : Bee
     [SerializeField, Tooltip("Время зависания над цветком")]
     Vector2 timeOverFlower;
 
+    [SerializeField] GameObject hivePrefab;
+    
     private Vector2 _flowerVector;
     private bool _pollinated = false;
 
@@ -18,7 +20,6 @@ public class BeeWorker : Bee
     private bool flowerTimerOn = false;
     private float flowerTimeLeft = 0;
     
-    // делает целью случайный вектор
     private void RandomFlowerTarget()
     {
         toHive = false;
@@ -27,7 +28,6 @@ public class BeeWorker : Bee
     
     private void Update()
     {
-        // если нет цели, известен хотя бы 1 цветок, то установить цель на случайный цветок
         if (target == Vector2.zero && hive.knownFlowers.Count != 0) RandomFlowerTarget();
 
         if (target != Vector2.zero)
@@ -38,12 +38,14 @@ public class BeeWorker : Bee
             CheckPosition();
             BeeTouchHive();
         }
-        
-        HiveTimer();
-        FlowerTimer();
+
+        if (!newHive)
+        {
+            HiveTimer();
+            FlowerTimer();
+        }
     }
 
-    // не работает
     private void FlowerTimer()
     {
         if (flowerTimerOn)
@@ -62,7 +64,6 @@ public class BeeWorker : Bee
         }
     }
 
-    // не работает
     private void HiveTimer()
     {
         if (hiveTimerOn)
@@ -81,36 +82,27 @@ public class BeeWorker : Bee
             }
         }
     }
-    
-    private void SetHiveTimer()
-    {
-        hiveTimeLeft = Random.Range(timeInHive.x, timeInHive.y);
-    }
-    
-    private void SetFlowerTimer()
-    {
-        flowerTimeLeft = Random.Range(timeOverFlower.x, timeOverFlower.y);
-    }
 
     private void CheckPosition()
     {
-        // если достиг цели и цель не улей
-        if ((Vector2) transform.position == target && !toHive && !flowerTimerOn)
+        if ((Vector2) transform.position == target && !toHive && !flowerTimerOn && !newHive)
         {
-            // точка для зависания = цветку
             _flowerVector = transform.position;
-            // включить таймер
-            SetFlowerTimer();
+            flowerTimeLeft = Random.Range(timeOverFlower.x, timeOverFlower.y);
             flowerTimerOn = true;
+        }
+        else if ((Vector2)transform.position == target && newHive)
+        {
+            Instantiate(hivePrefab, transform.position, Quaternion.identity);
+            Destroy(this);
         }
     }
 
     private void BeeTouchHive()
     {
-        // опылён, цель - улей, достиг улья
-        if (_pollinated && toHive && (Vector2) transform.position == (Vector2) transform.parent.position && !hiveTimerOn)
+        if (_pollinated && toHive && (Vector2) transform.position == (Vector2) transform.parent.position && !hiveTimerOn && !newHive)
         {
-            SetHiveTimer();
+            hiveTimeLeft = Random.Range(timeInHive.x, timeInHive.y);
             hiveTimerOn = true;
         }
     }

@@ -106,8 +106,8 @@ MonoBehaviour:
   flowersSpawnCount: 20
   beeSpawnCount: {x: 2, y: 4}
   pointsToSpawn: 15
-  beesForNewHive: 10
-  radiusNewHive: 8
+  beesForNewHive: 20
+  radiusNewHive: {x: 15, y: 50}
   maxBeeScoutCount: 5
   beeScoutSpawnChance: 5
   maxBeeDefenderCount: 5

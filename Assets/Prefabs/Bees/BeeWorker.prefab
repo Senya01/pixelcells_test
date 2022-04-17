@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4967232325120670134}
   m_Layer: 0
   m_Name: BeeWorker
-  m_TagString: Untagged
+  m_TagString: BeeWorker
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -75,7 +75,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 2
   m_Sprite: {fileID: 6683615111705859281, guid: 4d195bd169e560846951b16015ccc492, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.33161467, g: 1, b: 0.3160377, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -149,4 +149,6 @@ MonoBehaviour:
   target: {x: 0, y: 0}
   hive: {fileID: 0}
   toHive: 1
+  newHive: 0
   timeOverFlower: {x: 1, y: 3}
+  hivePrefab: {fileID: 3189031997644053761, guid: a8d2e5bf62d2bf34992c8befcce9cf40, type: 3}

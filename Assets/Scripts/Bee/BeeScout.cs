@@ -51,14 +51,12 @@ public class BeeScout : Bee
     
     private void CheckPosition()
     {
-        // достик цели и нет цветка
         if ((Vector2)transform.position == target && _flower == Vector2.zero)
         {
             SetRandomTarget();
         }
     }
 
-    // установить случайную цель
     private void SetRandomTarget()
     {
         toHive = false;
@@ -67,7 +65,6 @@ public class BeeScout : Bee
     
     private void BeeTouchHive()
     {
-        // если есть новый цветок, цель - улей, достиг улья
         if (_flower != Vector2.zero && toHive && (Vector2)transform.position == (Vector2)transform.parent.position && !hiveTimerOn)
         {
             SetHiveTimer();
@@ -77,15 +74,11 @@ public class BeeScout : Bee
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        // коснулся цветка
         if (col.CompareTag("Flower"))
         {
-            // если цветка нет в уже известных
             if (!hive.knownFlowers.Contains(col.transform.position))
             {
-                // запомнить новый цветок
                 _flower = col.transform.position;
-                // вернуться в улей
                 ReturnToHive();
             }
         }

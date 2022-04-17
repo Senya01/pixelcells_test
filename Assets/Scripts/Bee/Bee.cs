@@ -11,15 +11,14 @@ public class Bee : MonoBehaviour
     [HideInInspector] public Vector2 target;
     [HideInInspector] public Hive hive;
 
-    // является ли целью улей
     [HideInInspector] public bool toHive = false;
+    [HideInInspector] public bool newHive = false;
 
     protected void MoveTo()
     {
         transform.position = Vector2.MoveTowards(transform.position, target, speed * Time.deltaTime);
     }
-
-    // вернуться к улью
+    
     protected void ReturnToHive()
     {
         toHive = true;
